@@ -1,5 +1,5 @@
 const pool = require("../config/db")
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcryptjs')
 const flagUtil = require('../util/flagUtil')
 
 exports.adminDB=(req, res, next)=>{
