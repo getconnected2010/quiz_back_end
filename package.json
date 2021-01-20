@@ -1,9 +1,6 @@
 {
   "name": "y",
   "version": "1.0.0",
-  "engines": {
-    "node": "v14.15.1"
-  },
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js"
