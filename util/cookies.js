@@ -4,16 +4,19 @@ exports.tokenToCookies= async(res, accessToken, refreshToken, userToken)=>{
     res.cookie('accessToken', accessToken,{
         maxAge: 1000*60*15,
         httpOnly: true,
-        secure: false
+        sameSite: process.env.NODE_ENV==='production'?'none':true,
+        secure: process.env.NODE_ENV==='production'? true: false
     })
     res.cookie('refreshToken', refreshToken, {
         maxAge: 1000*60*45,
         httpOnly: true,
-        secure: false
+        sameSite: process.env.NODE_ENV==='production'?'none':true,
+        secure: process.env.NODE_ENV==='production'? true: false
     })
     res.cookie('userToken', userToken, {
         maxAge: 1000*60*45,
         httpOnly: false,
+        sameSite: process.env.NODE_ENV==='production'?'none':true,
         secure: false
     })
 }
