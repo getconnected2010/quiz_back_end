@@ -1,17 +1,17 @@
 const jwt=require('jsonwebtoken')
 
-exports.tokenToCookies= async(res, accessToken, refreshToken, userToken)=>{
+exports.tokenToCookies= async(req, res, accessToken, refreshToken, userToken)=>{
     res.cookie('accessToken', accessToken,{
         maxAge: 1000*60*15,
         httpOnly: false,
-        domain:'https://main.d2fvzmg7yabbey.amplifyapp.com',
+        domain: req.headers.origin,
         path:'/',
         sameSite: process.env.NODE_ENV==='production'?'none': true,
         secure: true
     })
     res.cookie('refreshToken', refreshToken, {
         maxAge: 1000*60*45,
-        domain:'https://main.d2fvzmg7yabbey.amplifyapp.com',
+        //domain:'https://main.d2fvzmg7yabbey.amplifyapp.com',
         httpOnly: false,
         //sameSite: process.env.NODE_ENV==='production'?'none': true,
         secure: true
@@ -32,7 +32,7 @@ exports.assign = async (req, res)=>{
         const accessToken= jwt.sign({user_id, admin}, process.env.JWT_ACCESS_TOKEN)
         const refreshToken= jwt.sign({user_id, admin}, process.env.JWT_REFRESH_TOKEN)
         const userToken= jwt.sign({user_id, admin}, process.env.JWT_USER_SET_TOKEN)
-        await this.tokenToCookies(res, accessToken, refreshToken, userToken)
+        await this.tokenToCookies(req, res, accessToken, refreshToken, userToken)
         res.status(200).json({msg:'Welcome'})
     } catch (error) {
         res.status(400).json({msg: 'server error with assigning cookies'})
@@ -80,7 +80,7 @@ exports.refresh =async(req, res, next)=>{
             accessToken= jwt.sign({user_id, admin}, process.env.JWT_ACCESS_TOKEN)
             refreshToken = jwt.sign({user_id, admin}, process.env.JWT_REFRESH_TOKEN)
             const userToken = jwt.sign({user_id, admin}, process.env.JWT_USER_SET_TOKEN)
-            await this.tokenToCookies(res, accessToken, refreshToken, userToken)
+            await this.tokenToCookies(req, res, accessToken, refreshToken, userToken)
             next()
         }
     } catch (error) {
