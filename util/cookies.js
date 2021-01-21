@@ -11,7 +11,6 @@ exports.tokenToCookies= async(res, accessToken, refreshToken, userToken)=>{
     res.cookie('refreshToken', refreshToken, {
         maxAge: 1000*60*45,
         httpOnly: false,
-        domain: 'https://main.d2fvzmg7yabbey.amplifyapp.com',
         sameSite: process.env.NODE_ENV==='production'?'none': true,
         secure: true
     })
@@ -19,7 +18,6 @@ exports.tokenToCookies= async(res, accessToken, refreshToken, userToken)=>{
         maxAge: 1000*60*45,
         httpOnly: false,
         path:'/',
-        domain: 'https://main.d2fvzmg7yabbey.amplifyapp.com',
         sameSite: process.env.NODE_ENV==='production'?'none': true,
         secure: true
     })
