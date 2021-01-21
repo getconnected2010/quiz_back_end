@@ -17,7 +17,7 @@ exports.tokenToCookies= async(res, accessToken, refreshToken, userToken)=>{
         maxAge: 1000*60*45,
         httpOnly: false,
         sameSite: false,
-        secure: false
+        secure: true
     })
 }
 
