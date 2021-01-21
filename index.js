@@ -7,7 +7,7 @@ const userRoutes = require('./routes/userRoutes')
 const cookieParser= require('cookie-parser')
 
 //resolves access-control-allow-origin header error for axios. add the 'corsOptions' obj in cors(corsOptions) middleware
-const whiteList=['http://localhost:3000', 'http://localhost:8000']
+const whiteList=['http://localhost:3000', 'http://localhost:8000', 'https://main.d2fvzmg7yabbey.amplifyapp.com']
 const corsOptions={
     origin: (origin, callback)=>{
         if(!origin || whiteList.indexOf(origin)!== -1){
