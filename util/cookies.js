@@ -4,19 +4,19 @@ exports.tokenToCookies= async(res, accessToken, refreshToken, userToken)=>{
     res.cookie('accessToken', accessToken,{
         maxAge: 1000*60*15,
         httpOnly: true,
-        sameSite: true,
+        sameSite: process.env.NODE_ENV==='production'?'none': true,
         secure: true
     })
     res.cookie('refreshToken', refreshToken, {
         maxAge: 1000*60*45,
         httpOnly: true,
-        sameSite: true,
+        sameSite: process.env.NODE_ENV==='production'?'none': true,
         secure: true
     })
     res.cookie('userToken', userToken, {
         maxAge: 1000*60*45,
         httpOnly: false,
-        sameSite: true,
+        sameSite: process.env.NODE_ENV==='production'?'none': true,
         secure: true
     })
 }
@@ -39,17 +39,20 @@ exports.delete=async (req, res)=>{
         res.cookie('accessToken', '',{
             maxAge: 0,
             httpOnly: true,
-            secure: false
+            sameSite: process.env.NODE_ENV==='production'?'none': true,
+            secure: true
         })
         res.cookie('refreshToken', '', {
             maxAge: 0,
             httpOnly: true,
-            secure: false
+            sameSite: process.env.NODE_ENV==='production'?'none': true,
+            secure: true
         })
         res.cookie('userToken', '', {
             maxAge: 0,
             httpOnly: false,
-            secure: false
+            sameSite: process.env.NODE_ENV==='production'?'none': true,
+            secure: true
         })
         res.status(200).json({msg:'successfully logged out'})
     } catch (error) {
