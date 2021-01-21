@@ -5,18 +5,18 @@ exports.tokenToCookies= async(res, accessToken, refreshToken, userToken)=>{
         maxAge: 1000*60*15,
         httpOnly: true,
         sameSite: false,
-        secure: false
+        secure: true
     })
     res.cookie('refreshToken', refreshToken, {
         maxAge: 1000*60*45,
         httpOnly: true,
         sameSite: true,
-        secure: false
+        secure: true
     })
     res.cookie('userToken', userToken, {
         maxAge: 1000*60*45,
         httpOnly: false,
-        path:'/',
+        sameSite: false,
         secure: false
     })
 }
