@@ -38,21 +38,25 @@ exports.delete=async (req, res)=>{
     try {
         res.cookie('accessToken', '',{
             maxAge: 0,
-            httpOnly: true,
+            httpOnly: false,
             sameSite: process.env.NODE_ENV==='production'?'none': true,
+            path:'/',
+            domain: 'https://main.d2fvzmg7yabbey.amplifyapp.com',
             secure: true
         })
         res.cookie('refreshToken', '', {
             maxAge: 0,
-            httpOnly: true,
+            httpOnly: false,
             sameSite: process.env.NODE_ENV==='production'?'none': true,
+            domain: 'https://main.d2fvzmg7yabbey.amplifyapp.com',
             secure: true
         })
         res.cookie('userToken', '', {
             maxAge: 0,
             httpOnly: false,
             sameSite: process.env.NODE_ENV==='production'?'none': true,
-            secure: true
+            path:'/',
+            secure: false
         })
         res.status(200).json({msg:'successfully logged out'})
     } catch (error) {
