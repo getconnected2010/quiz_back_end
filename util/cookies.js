@@ -4,22 +4,22 @@ exports.tokenToCookies= async(res, accessToken, refreshToken, userToken)=>{
     res.cookie('accessToken', accessToken,{
         maxAge: 1000*60*15,
         httpOnly: false,
-        domain:'https://node-quiz-backend.herokuapp.com/',
+        domain:'https://main.d2fvzmg7yabbey.amplifyapp.com',
         path:'/',
         sameSite: process.env.NODE_ENV==='production'?'none': true,
         secure: true
     })
     res.cookie('refreshToken', refreshToken, {
         maxAge: 1000*60*45,
-        domain:'https://node-quiz-backend.herokuapp.com/',
+        domain:'https://main.d2fvzmg7yabbey.amplifyapp.com',
         httpOnly: false,
-        sameSite: process.env.NODE_ENV==='production'?'none': true,
+        //sameSite: process.env.NODE_ENV==='production'?'none': true,
         secure: true
     })
     res.cookie('userToken', userToken, {
         maxAge: 1000*60*45,
         httpOnly: false,
-        domain: 'https://node-quiz-backend.herokuapp.com/',
+        domain: 'https://node-quiz-backend.herokuapp.com',
         path:'/',
         sameSite: process.env.NODE_ENV==='production'?'none': true,
         secure: false

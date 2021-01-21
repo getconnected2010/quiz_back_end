@@ -18,9 +18,13 @@ const corsOptions={
     }
 }
 
-//resolves access-control-allow-credentials header error for axios
+//resolves access-control-allow-credentials 
 app.use((req, res, next)=>{
-    res.header({'Access-Control-Allow-Credentials':true})
+    res.header({'Access-Control-Allow-Origin': req.headers.origin});
+    res.header({'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE'});
+    res.header({'Access-Control-Allow-Headers': 'X-Requested-With, content-type'})
+    res.header({'Access-Control-Allow-Credentials':true})  //resolves axios calls with cookie enabled {withCredentials: true}
+    
     next()
 })
 
