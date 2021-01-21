@@ -3,19 +3,23 @@ const jwt=require('jsonwebtoken')
 exports.tokenToCookies= async(res, accessToken, refreshToken, userToken)=>{
     res.cookie('accessToken', accessToken,{
         maxAge: 1000*60*15,
-        httpOnly: true,
+        httpOnly: false,
+        path:'/',
         sameSite: process.env.NODE_ENV==='production'?'none': true,
         secure: true
     })
     res.cookie('refreshToken', refreshToken, {
         maxAge: 1000*60*45,
-        httpOnly: true,
+        httpOnly: false,
+        domain: 'https://main.d2fvzmg7yabbey.amplifyapp.com',
         sameSite: process.env.NODE_ENV==='production'?'none': true,
         secure: true
     })
     res.cookie('userToken', userToken, {
         maxAge: 1000*60*45,
         httpOnly: false,
+        path:'/',
+        domain: 'https://main.d2fvzmg7yabbey.amplifyapp.com',
         sameSite: process.env.NODE_ENV==='production'?'none': true,
         secure: true
     })
