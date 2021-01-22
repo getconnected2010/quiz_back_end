@@ -14,8 +14,7 @@ exports.adminDB=(req, res, next)=>{
                 const username = result[0].username
                 flagUtil.flagUser(username)
                 res.status(401).json({msg:"you don't have admin priviledge"})
-            }
-            if(result.length===1 && result[0].admin==='true') {
+            }else if(result.length===1 && result[0].admin==='true') {
                 req.body.dbusername = result[0].username
                 req.body.dbPassword = result[0].password
                 next()
