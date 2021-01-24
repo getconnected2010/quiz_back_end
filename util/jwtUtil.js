@@ -4,17 +4,29 @@ const jwt = require('jsonwebtoken')
 exports.assign = (req, res)=>{
     try {
         const {user_id, admin}= req.body
-        const userToken= jwt.sign({user_id, admin}, process.env.JWT_USER_SET_TOKEN)
+        const userToken= jwt.sign({user_id, admin}, process.env.JWT_USER_SET_TOKEN,{
+            expiresIn: 60*1
+        })
         res.status(200).json({userToken: userToken})
     } catch (error) {
         res.status(400).json({msg: 'server error assigning tokens'})
     }
 }
 
+exports.refresh=(req, res, next)=>{
+    const userToken= req.params.userToken
+    jwt.verify(userToken, process.env.JWT_USER_SET_TOKEN, (err, decoded)=>{
+        if(err) return res.status(401).json({msg:'Your session has expired. Please login using credentials.'})
+        req.body.user_id= decoded.user_id
+        req.body.admin= decoded.admin
+        next()
+    })
+}
+
 exports.verifyAdmin= (req, res, next)=>{
     const userToken = req.params.userToken
     const user_id= Number(req.params.user_id || req.body.user_id)
-    if(!userToken) res.status(400).json({msg:'you are not logged in'})
+    if(!userToken) return res.status(400).json({msg:'you are not logged in'})
     jwt.verify(userToken, process.env.JWT_USER_SET_TOKEN, (err, decoded)=>{
         if(err) return res.status(401).json({msg:'invalid admin token'})
         if(decoded.user_id!==user_id) return res.status(401).json({msg:'invalid admin token'})

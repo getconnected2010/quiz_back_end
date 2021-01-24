@@ -20,9 +20,9 @@ const corsOptions={
 
 //resolves access-control-allow-credentials 
 app.use((req, res, next)=>{
-    //res.header({'Access-Control-Allow-Origin': req.headers.origin});
+    res.header({'Access-Control-Allow-Origin': req.headers.origin});
     //res.header({'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE'});
-    //res.header({'Access-Control-Allow-Headers': 'X-Requested-With, content-type'})
+    res.header({'Access-Control-Allow-Headers': 'X-Requested-With, content-type'})
     res.header({'Access-Control-Allow-Credentials':true})  //resolves axios calls with cookie enabled {withCredentials: true}
     
     next()
@@ -36,6 +36,8 @@ app.use(cookieParser())
 app.use('/quiz', quizRoutes)
 //user route
 app.use('/user', userRoutes)
+
+
 
 const PORT= process.env.PORT || 8000
 app.listen(PORT, ()=>{
