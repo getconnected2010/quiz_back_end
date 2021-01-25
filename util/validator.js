@@ -2,6 +2,7 @@ const {check, validationResult} = require ('express-validator')
 
 exports.validatorResult = (req, res, next)=>{
     const result= validationResult(req)
+    console.log('in validation',req.headers.authorization)
     if(!result.isEmpty()){
         if(result.errors[0].msg) return res.status(422).json({msg: result.errors[0].msg})
         res.status(422).json({msg: 'server detected an invalid input'})
@@ -77,13 +78,20 @@ exports.id=[
         .isInt().withMessage('id must be a number')
 ]
 
+exports.jwt=[
+    check('authorization')
+        .trim()
+        .notEmpty().withMessage('access tokens not found')
+        .matches(/^[a-zA-Z0-9-_+/.]+$/).withMessage('invalid character found in access tokens')
+]
+
 exports.newPassword=[
     check('newPassword')
         .trim()
         .notEmpty().withMessage('new password is required')
         .isLength({min:6, max:12}).withMessage('new password must be 6 to 12 characters long')
         .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$*+=:.])/).withMessage('password must contain lower case letter, upper case letter, number and special character from !@#$*+=:.')
-        .matches(/^[a-zA-Z0-9!@#$*+=:.]+$/).withMessage('password can only contain letters, numbers and special characters !@#$*+=:.')
+        .matches(/^[a-zA-Z0-9!@#$*+=:.]+$/).withMessage('password can only contain letters, numbers and special characters !@#$*+=:.')//allows any of these characters
 ]
 
 exports.newUsername=[
