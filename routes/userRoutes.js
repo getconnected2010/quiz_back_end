@@ -1,14 +1,14 @@
 const route = require('express').Router()
-//const CK = require('../util/cookies')
+const cookieParser = require('cookie-parser')
 const JWT= require('../util/jwtUtil')
 const QC = require('../controller/quizController')
 const UC = require('../controller/userController')
 const VAL = require('../util/validator')
 const VER = require('../util/verify')
 
-const cookieParser = require('cookie-parser')
 
 route.use(cookieParser())
+
 //user routes
 route.get('/admin/scores/:username', VAL.username, VAL.jwt, VAL.validatorResult, JWT.verifyAdmin, UC.getUserId, QC.fetchScores)
 
@@ -24,7 +24,7 @@ route.post('/self/reset', VAL.username, VAL.password, VAL.validatorResult, VER.u
 
 route.post('/signin', VAL.username, VAL.password, VAL.validatorResult, VER.userNotFlagged, UC.userSignIn, VER.password, JWT.assign)
 
-route.get('/signout', )  //CK.delete
+route.get('/signout', VAL.jwt, VAL.validatorResult, JWT.signout) 
 
 route.post('/signup', VAL.username, VAL.newPassword, VAL.dob, VAL.validatorResult, VER.usernameAvailable, UC.userSignUp)
 

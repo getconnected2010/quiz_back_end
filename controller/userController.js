@@ -163,4 +163,3 @@ exports.userSignUp=async(req, res)=>{
         })
     })
 }
-

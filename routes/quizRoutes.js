@@ -3,11 +3,9 @@ const router = express.Router()
 const JWT= require('../util/jwtUtil')
 const QC= require('../controller/quizController')
 const VAL = require('../util/validator')
-//const CK= require('../util/cookies')
 const VER = require('../util/verify')
 
-
-router.post('/add', VAL.addQA, VAL.jwt, VAL.validatorResult, JWT.verifyAdmin,  QC.addQa)
+router.post('/add', VAL.addQA, VAL.jwt, VAL.validatorResult, JWT.verifyAdmin, QC.addQa)
 
 router.delete('/delete/:id', VAL.id, VAL.jwt, VAL.validatorResult, JWT.verifyAdmin, QC.deleteQa)
 

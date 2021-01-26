@@ -1,7 +1,6 @@
 require('dotenv').config()
 const mysql= require('mysql')
 
-
 const pool = process.env.NODE_ENV==='production'?
     mysql.createPool({
         connectionLimit: 10,

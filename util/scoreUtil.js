@@ -11,7 +11,6 @@ exports.recordScore=(req, res)=>{
             res.status(200).json({msg:'score successfully recorded in database'})
         })
     })
-
 }
 
 exports.updateScore=(req, res)=>{
@@ -25,7 +24,6 @@ exports.updateScore=(req, res)=>{
             res.status(200).json({msg:'score sussfully recorded in database'})
         })
     })
-
 }
 
 exports.delNullScore=()=>{

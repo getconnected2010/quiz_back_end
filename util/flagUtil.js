@@ -21,3 +21,15 @@ exports.flaggedUserReset = async(username)=>{
         })
     })
 }
+
+exports.removeRefreshTkn= async (user_id)=>{
+    if(!user_id) return
+    const removeTknSql= "UPDATE users SET refresh_token = null WHERE user_id=?"
+    pool.getConnection((err, connection)=>{
+        if(err) return
+        connection.query(removeTknSql, [user_id], (err)=>{
+            connection.release()
+            if(err)  return
+        })
+    })
+}
