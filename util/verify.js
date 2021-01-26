@@ -34,7 +34,7 @@ exports.newUsernameAvailable=(req, res, next)=>{
             connection.release()
             if(err) return res.status(500).json({msg:'database error verifying new username'})
             if(result[0].user===0) return next()
-            res.status(401).json({msg:'username not available'})
+            res.status(400).json({msg:'username not available'})
         })
     })
 }
@@ -57,7 +57,7 @@ exports.userInDB=(req, res, next)=>{
     const user_id= req.params.user_id || req.body.user_id
     const sqlUser= "SELECT username, password FROM users WHERE user_id=?"
     pool.getConnection((err, connection)=>{
-        if(err) return res.status(401).json({msg:"server error vefifying user profile in database"})
+        if(err) return res.status(500).json({msg:"server error vefifying user profile in database"})
         connection.query(sqlUser, [user_id], (err, result)=>{
             connection.release()
             if(err){
@@ -67,7 +67,7 @@ exports.userInDB=(req, res, next)=>{
                 req.body.dbPassword = result[0].password
                 next()
             } else{
-                res.status(401).json({msg:"Your user profile couldn't be verified in the database"})
+                res.status(400).json({msg:"Your user profile couldn't be verified in the database"})
             }
         })
     })

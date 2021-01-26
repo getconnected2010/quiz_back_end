@@ -2,7 +2,6 @@ const {check, validationResult} = require ('express-validator')
 
 exports.validatorResult = (req, res, next)=>{
     const result= validationResult(req)
-    console.log('in validation',req.headers.authorization)
     if(!result.isEmpty()){
         if(result.errors[0].msg) return res.status(422).json({msg: result.errors[0].msg})
         res.status(422).json({msg: 'server detected an invalid input'})
@@ -125,13 +124,6 @@ exports.subject =[
                 return value
             }
         })
-]
-
-exports.user_id=[
-    check('user_id')
-        .trim()
-        .notEmpty().withMessage('a user id required')
-        .isInt().withMessage('user id must be a number')
 ]
 
 exports.username=[

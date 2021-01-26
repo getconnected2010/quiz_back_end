@@ -39,7 +39,7 @@ exports.getUserId=(req, res, next)=>{
         connection.query(getUserIdSql, [username], (err, result)=>{
             connection.release()
             if(err) return res.status(500).json({msg:'database error fetching scores'})
-            if(result.length===0) return res.status(401).json({msg:"that username doesn't exist in database"})
+            if(result.length===0) return res.status(400).json({msg:"that username doesn't exist in database"})
             if(result.length===1){
                 req.body.user_id= result[0].user_id
                 next()
