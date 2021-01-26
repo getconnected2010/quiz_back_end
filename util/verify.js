@@ -48,7 +48,7 @@ exports.password=(req, res, next)=>{
             next()
         } else{
             flagUtil.flagUser(username)
-            res.status(401).json({msg:'wrong password'})
+            res.status(401).json({msg:'Wrong password. Access denied. Please login again.'})
         }
     })
 }
