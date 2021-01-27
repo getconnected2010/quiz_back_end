@@ -40,13 +40,18 @@ exports.newUsernameAvailable=(req, res, next)=>{
 }
 
 exports.password=(req, res, next)=>{
-    const {username, password, dbPassword} = req.body
+    const {username, password, dbPassword, user_id} = req.body
     bcrypt.compare(password, dbPassword, (err, same)=>{
-        if(err) return res.status(500).json({msg:'server error verifying your password'})
+        if(err) {
+            flagUtil.removeRefreshTkn(user_id)
+            res.status(500).json({msg:'server error verifying your password.'})
+            return
+        } 
         if(same) {
             flagUtil.flaggedUserReset(username)
             next()
         } else{
+            flagUtil.removeRefreshTkn(user_id)
             flagUtil.flagUser(username)
             res.status(401).json({msg:'Wrong password. Access denied. Redirecting to login page.'})
         }

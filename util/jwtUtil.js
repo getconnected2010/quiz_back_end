@@ -23,7 +23,11 @@ exports.assign = (req, res, next)=>{
                     return
                 }
                 res.set({'usertoken': userToken}) //sets a header 'usertoken' and adds the token as value
-                if(refreshCount!==0) return next()
+                if(refreshCount!==0) {
+                    req.body.user_id = user_id
+                    next()
+                    return
+                }
                 res.status(200).json({msg:'welcome'})
             })
         })
@@ -111,7 +115,7 @@ exports.verifyAdmin= (req, res, next)=>{
                 flagUtil.removeRefreshTkn(user_id)
                 res.status(401).json({msg:"you don't have admin priviledge."})
                 return
-                } 
+                }
             if(decoded.admin==='true') {
                 req.body.user_id = decoded.user_id
                 next()
