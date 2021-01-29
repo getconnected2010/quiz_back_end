@@ -2,8 +2,10 @@ const pool = require("../config/db")
 const bcrypt = require('bcryptjs')
 const flagUtil = require('../util/flagUtil')
 
+//verifies admin priv in db and attaches username & password from db to req
+//username & password will be user by other middlewares further down
 exports.adminDB=(req, res, next)=>{
-    const user_id = req.params.user_id || req.body.user_id
+    const user_id = req.body.user_id
     const sqlAdmin= "SELECT username, password, admin FROM users WHERE user_id=?"
     pool.getConnection((err, connection)=>{
         if(err) return res.status(500).json({msg:'server error checking admin priviledge'})
@@ -25,6 +27,7 @@ exports.adminDB=(req, res, next)=>{
     })
 }
 
+//for update username route, checks if a username already exists in db since username has to be unique
 exports.newUsernameAvailable=(req, res, next)=>{
     const {newUsername} = req.body
     const userChecksql="SELECT COUNT(*) AS user FROM users WHERE username=?"
@@ -39,6 +42,7 @@ exports.newUsernameAvailable=(req, res, next)=>{
     })
 }
 
+//verifies user input password to db password
 exports.password=(req, res, next)=>{
     const {username, password, dbPassword, user_id} = req.body
     bcrypt.compare(password, dbPassword, (err, same)=>{
@@ -58,8 +62,9 @@ exports.password=(req, res, next)=>{
     })
 }
 
+//checks if a user exists in db
 exports.userInDB=(req, res, next)=>{
-    const user_id= req.params.user_id || req.body.user_id
+    const user_id= req.body.user_id
     const sqlUser= "SELECT username, password FROM users WHERE user_id=?"
     pool.getConnection((err, connection)=>{
         if(err) return res.status(500).json({msg:"server error vefifying user profile in database"})
@@ -78,6 +83,7 @@ exports.userInDB=(req, res, next)=>{
     })
 }
 
+//for signup route, checks if username alrady exists in db since username has to be unique
 exports.usernameAvailable=(req, res, next)=>{
     const {username} = req.body
     const userCheckSql= "SELECT username FROM users WHERE username=?"
@@ -92,6 +98,7 @@ exports.usernameAvailable=(req, res, next)=>{
     })
 }
 
+//checks if user input of secret question matches db
 exports.usernameDobMatchDb=(req, res, next)=>{
     const{username, dob} = req.body
     userDobSql="SELECT username, dob FROM users WHERE username=? AND dob=?"
@@ -114,6 +121,8 @@ exports.usernameDobMatchDb=(req, res, next)=>{
     })
 }
 
+//checks if username is flagged for incorrect password attempts. 
+//if its flagged more than set number of times, its blocked and forced to reset using secret quesitons.
 exports.userNotFlagged = (req, res, next)=>{
     const{username} = req.body
     flagCheckSql= "SELECT COUNT(*) AS flaggedCount FROM flagged WHERE username=?"
@@ -122,15 +131,17 @@ exports.userNotFlagged = (req, res, next)=>{
         connection.query(flagCheckSql, [username], (err, result)=>{
             connection.release()
             if(err) return res.status(500).json({msg:'database error checking username against blacklist'})
-            if(result[0].flaggedCount<3) return next()
+            if(result[0].flaggedCount<3) return next() //if not flagged more than three times, it passes to next
             res.status(401).json({msg:'your account is blocked. Please reset your password'})
         })
     })
  }
 
-
+//checks if username has failed password attemps more than set number of times within last 30 minutes.
+//then either blocks username for 30 minutes or allows to next fn
 exports.userNotTimeout = (req, res, next)=>{
     const {username} = req.body
+    //counts how many times username had failed password and secret question attemps in last 30 minute.
     timeoutSql= "SELECT COUNT(*) AS flaggedCount FROM flagged WHERE username=? AND unix_timestamp(time)> unix_timestamp(now())-1800"
     pool.getConnection((err, connection)=>{
         if(err) return res.status(500).json({msg:'server error checking if username is flagged'})

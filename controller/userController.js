@@ -3,6 +3,7 @@ const bcrypt= require('bcryptjs')
 const flagUtil = require('../util/flagUtil')
 const scoreUtil = require('../util/scoreUtil')
 
+//admin deletes a user off db
 exports.delUser=async(req, res)=>{
     const {username}= req.body
     const delSql= "DELETE FROM users WHERE username=?"
@@ -18,6 +19,7 @@ exports.delUser=async(req, res)=>{
     })
 }
 
+//an admin access this end point to remove admin priviledge of another admin
 exports.dnGradeUser=(req, res)=>{
     const {username} = req.body
     const dnGradeSql = "UPDATE users SET admin= 'false' WHERE username=?"
@@ -31,6 +33,7 @@ exports.dnGradeUser=(req, res)=>{
     })
 }
 
+//a middleware to fetch user_id of a username from db. user_id to be used by next funcitons
 exports.getUserId=(req, res, next)=>{
     const username = req.params.username
     const getUserIdSql="SELECT user_id FROM users WHERE username=?"
@@ -80,6 +83,7 @@ exports.getUserId=(req, res, next)=>{
     })
  }
 
+ //admin can give admin priviledge to another user
  exports.upgradeUser=(req, res)=>{
      const {username} = req.body
      const upgradeSql = "UPDATE users SET admin= 'true' WHERE username=?"
@@ -93,6 +97,7 @@ exports.getUserId=(req, res, next)=>{
      })
  }
 
+ //an admin can remove a blocked user from the flagged table.
 exports.userAdminReset=async (req, res)=>{
     try {
         const {username}= req.body
@@ -103,6 +108,7 @@ exports.userAdminReset=async (req, res)=>{
     }
 }
 
+//a locked out user resets password after a previous middleware verifies dob secret question
 exports.userSelfReset=async(req, res)=>{
     const{password, username} = req.body
     const salt= Number(process.env.SALT)

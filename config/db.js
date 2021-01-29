@@ -1,9 +1,11 @@
 require('dotenv').config()
 const mysql= require('mysql')
 
+//creates an instance of db configuration depending on production or dev env
 const pool = process.env.NODE_ENV==='production'?
+    //production env mysql config
     mysql.createPool({
-        connectionLimit: 10,
+        connectionLimit: 10,  //number of parallel connections to db
         host: process.env.HOST,
         user: process.env.USER,
         password:process.env.PASSWORD,
@@ -11,6 +13,7 @@ const pool = process.env.NODE_ENV==='production'?
 
     })
     :
+    //dev env mysql config
     mysql.createPool({
         connectionLimit: 10,
         host: 'localhost',
@@ -19,6 +22,7 @@ const pool = process.env.NODE_ENV==='production'?
         database: 'quiz'
     })
 
+    //checks connection at initial startup
 pool.getConnection((err, connection)=>{
     if(err){
         console.log('error connecting to db')
@@ -27,4 +31,4 @@ pool.getConnection((err, connection)=>{
     }
 })
 
-module.exports= pool
+module.exports= pool //access pool to make db calls from server files

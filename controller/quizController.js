@@ -1,21 +1,23 @@
 const pool = require('../config/db')
 const scoreUtil = require('../util/scoreUtil')
 
+//adds a question to db
 exports.addQa = (req, res)=>{
     const {subject, question, answer1, answer2, answer3, answer4, correct} = req.body
     const sqlAdd = "INSERT INTO quiz_list (subject, question, answer1, answer2, answer3, answer4, correct) VALUES (?,?,?,?,?,?,?)";
-    pool.getConnection((err, connection)=>{
+    pool.getConnection((err, connection)=>{   //creating a db connection
         if(err) return res.status(500).json({msg:'server error adding question to database'})
         connection.query(sqlAdd, [subject, question, answer1, answer2, answer3, answer4, correct], (err, result)=>{
-            connection.release()
+            connection.release()   //connection release makes the pool available for other fn to call db
             if(err) return res.status(500).json({msg:'database error adding question to database'})
             res.status(200).send(result)
         })
     })
 }
 
+//delete a question from db
 exports.deleteQa=(req, res)=>{
-    const id= req.params.id
+    const id= req.params.id  //the id reference of a question in db is sent in params
     const deleteSql= "DELETE FROM quiz_list WHERE id=?"
     pool.getConnection((err, connection)=>{
         if(err) return res.status(400).json(({msg:'server error deleting question.'}))
@@ -27,8 +29,9 @@ exports.deleteQa=(req, res)=>{
     })
 }
 
+//fetch scores of a user from db
 exports.fetchScores=(req, res)=>{
-    const user_id= req.params.user_id || req.body.user_id
+    const {user_id}= req.body   //user_id is attached to body inside express middleware after verifying jwt
     const scoresSql= "SELECT subject, score FROM score WHERE user_id=? ORDER BY subject ASC"
     pool.getConnection((err, connection)=>{
         if(err) return res.status(500).json({msg:'server error retrieving your scores'})
@@ -40,6 +43,7 @@ exports.fetchScores=(req, res)=>{
     })
 }
 
+//fetch question/answers from db by subject area
 exports.getQa = (req, res)=>{
     const subject = req.params.subject
     const listSql= "SELECT * FROM quiz_list WHERE subject=? ORDER BY id DESC";
@@ -53,6 +57,7 @@ exports.getQa = (req, res)=>{
     })
 }
 
+//record score of a user
 exports.recordScore=(req, res)=>{
     const {user_id, subject} = req.body
     const scoreSql= "SELECT COUNT(*) as user FROM score WHERE user_id=? AND subject=?"
